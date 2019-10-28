@@ -76,3 +76,8 @@ for (var i = 0, length = photos.length; i < length; i++) {
 }
 
 document.querySelector('.pictures').appendChild(photosFragment);
+
+
+
+document.querySelector('.social__comment-count').classList.add('visually-hidden');
+document.querySelector('.social__loadmore').classList.add('visually-hidden');
