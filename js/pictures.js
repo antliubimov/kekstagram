@@ -64,8 +64,8 @@ var photoTemplate = document.querySelector('#picture');
 var renderPhoto = (photo) => {
   var photoElement = photoTemplate.cloneNode(true);
   photoElement.content.querySelector('.picture__img').src = photo.url;
-  photoElement.content.querySelector('.picture__likes').textContent = photo.likes;
-  photoElement.content.querySelector('.picture__comments');
+  photoElement.content.querySelector('.picture__stat--likes').textContent = photo.likes;
+  photoElement.content.querySelector('.picture__stat--comments');
   return photoElement;
 };
 
@@ -77,7 +77,23 @@ for (var i = 0, length = photos.length; i < length; i++) {
 
 document.querySelector('.pictures').appendChild(photosFragment);
 
+document.querySelector('.big-picture').classList.remove('hidden');
+document.querySelector('.big-picture__img').querySelector('img').src = photos[0].url;
+document.querySelector('.likes-count').textContent = photos[0].likes;
+document.querySelector('.comments-count').textContent = photos[0].comments.length;
+var commentsUl = document.querySelector('.social__comments');
+commentsUl.innerHTML = '';
+for (var j = 0; j < photos[0].comments.length; j++) {
+  var commentTemplate = `
+<li class="social__comment social__comment--text">
+    <img class="social__picture" src="img/avatar-${getRandomNum(1, 6)}.svg" alt="Аватар комментатора фотографии" width="35" height="35">
+    <p class="social__text">${photos[0].comments[j]}</p>
+</li>
+`;
+  commentsUl.innerHTML += commentTemplate;
+}
 
+document.querySelector('.social__caption').textContent = photos[0].description;
 
 document.querySelector('.social__comment-count').classList.add('visually-hidden');
-document.querySelector('.social__loadmore').classList.add('visually-hidden');
+document.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
