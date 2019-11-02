@@ -69,9 +69,11 @@ var renderPhoto = (photo) => {
   photoElement.querySelector('.picture__stat--comments');
   var createBigPicture = () => {
     var bigPicture = document.querySelector('.big-picture');
+
     bigPicture.querySelector('.big-picture__img').querySelector('img').src = photo.url;
     bigPicture.querySelector('.likes-count').textContent = photo.likes;
     bigPicture.querySelector('.comments-count').textContent = photo.comments.length;
+
     var commentsUl = bigPicture.querySelector('.social__comments');
     commentsUl.innerHTML = '';
     for (var j = 0; j < photo.comments.length; j++) {
@@ -89,7 +91,16 @@ var renderPhoto = (photo) => {
     bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
     bigPicture.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
     // TODO: create onclick Exit and Esc
+    var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel');
+    var onBigPictureCancelClick = () => {
+      bigPicture.querySelector('.social__comment-count').classList.remove('visually-hidden');
+      bigPicture.querySelector('.social__comment-loadmore').classList.remove('visually-hidden');
+      bigPictureCancel.removeEventListener('click', onBigPictureCancelClick);
+      document.querySelector('.big-picture').classList.add('hidden');
+    };
+    bigPictureCancel.addEventListener('click', onBigPictureCancelClick);
   };
+
   var onPhotoElementClick = (e) => {
     e.preventDefault();
     createBigPicture();
