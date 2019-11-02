@@ -85,20 +85,34 @@ var renderPhoto = (photo) => {
 `;
       commentsUl.innerHTML += commentTemplate;
     }
-
+    bigPicture.querySelector('.big-picture__title').classList.remove('visually-hidden');
     bigPicture.querySelector('.social__caption').textContent = photo.description;
 
     bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
     bigPicture.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
-    // TODO: create onclick Exit and Esc
+
     var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel');
-    var onBigPictureCancelClick = () => {
+
+    var bigPictureClose = () => {
+      bigPicture.querySelector('.big-picture__title').classList.add('visually-hidden');
       bigPicture.querySelector('.social__comment-count').classList.remove('visually-hidden');
       bigPicture.querySelector('.social__comment-loadmore').classList.remove('visually-hidden');
       bigPictureCancel.removeEventListener('click', onBigPictureCancelClick);
-      document.querySelector('.big-picture').classList.add('hidden');
+      document.removeEventListener('keydown', onBigPictureEscDown);
+      bigPicture.classList.add('hidden');
     };
+    var onBigPictureCancelClick = () => {
+      bigPictureClose();
+    };
+    var onBigPictureEscDown = (evt) => {
+        console.log(evt);
+      if (evt.key === ESC_KEY) {
+        bigPictureClose();
+      }
+    };
+
     bigPictureCancel.addEventListener('click', onBigPictureCancelClick);
+    document.addEventListener('keydown', onBigPictureEscDown);
   };
 
   var onPhotoElementClick = (e) => {
