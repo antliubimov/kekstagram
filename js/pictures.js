@@ -67,12 +67,12 @@ var renderPhoto = (photo) => {
   photoElement.querySelector('.picture__img').src = photo.url;
   photoElement.querySelector('.picture__stat--likes').textContent = photo.likes;
   photoElement.querySelector('.picture__stat--comments');
-  var onPhotoElementClick = (e) => {
-    e.preventDefault();
-    document.querySelector('.big-picture__img').querySelector('img').src = photo.url;
-    document.querySelector('.likes-count').textContent = photo.likes;
-    document.querySelector('.comments-count').textContent = photo.comments.length;
-    var commentsUl = document.querySelector('.social__comments');
+  var createBigPicture = () => {
+    var bigPicture = document.querySelector('.big-picture');
+    bigPicture.querySelector('.big-picture__img').querySelector('img').src = photo.url;
+    bigPicture.querySelector('.likes-count').textContent = photo.likes;
+    bigPicture.querySelector('.comments-count').textContent = photo.comments.length;
+    var commentsUl = bigPicture.querySelector('.social__comments');
     commentsUl.innerHTML = '';
     for (var j = 0; j < photo.comments.length; j++) {
       var commentTemplate = `
@@ -84,12 +84,18 @@ var renderPhoto = (photo) => {
       commentsUl.innerHTML += commentTemplate;
     }
 
-    document.querySelector('.social__caption').textContent = photo.description;
+    bigPicture.querySelector('.social__caption').textContent = photo.description;
 
-    document.querySelector('.social__comment-count').classList.add('visually-hidden');
-    document.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
+    bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
+    bigPicture.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
+    // TODO: create onclick Exit and Esc
+  };
+  var onPhotoElementClick = (e) => {
+    e.preventDefault();
+    createBigPicture();
     document.querySelector('.big-picture').classList.remove('hidden');
   };
+
   photoElement.addEventListener('click', onPhotoElementClick);
 
   return photoElement;
