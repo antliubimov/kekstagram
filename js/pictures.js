@@ -4,6 +4,10 @@ var ESC_KEY = "Escape";
 var PHOTO_COUNT = 25;
 var LIKES_MIN = 15;
 var LIKES_MAX = 200;
+const COMMENTS_AMOUNT = {
+  MIN: 1,
+  MAX: 2
+};
 var COMMENTS = [
   "Всё отлично!",
   "В целом всё неплохо. Но не всё.",
@@ -20,6 +24,38 @@ var DESCRIPTIONS = [
   "Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......",
   "Вот это тачка!"
 ];
+const EFFECTS = {
+  chrome: {
+    min: 0,
+    max: 1,
+    setFilter: (value) => `grayscale(${value})`
+  },
+  sepia: {
+    min: 0,
+    max: 1,
+    setFilter: (value) => `sepia(${value})`
+  },
+  marvin: {
+    min: 0,
+    max: 100,
+    setFilter: (value) => `invert(${value}%)`
+  },
+  phobos: {
+    min: 0,
+    max: 3,
+    setFilter: (value) => `blur(${value}px)`
+  },
+  heat: {
+    min: 1,
+    max: 3,
+    setFilter: (value) => `brightness(${value})`
+  },
+  none: {
+    min: 0,
+    max: 0,
+    setFilter: () => `none`
+  }
+};
 
 var getRandomNum = (min, max) =>
   Math.round(min - 0.5 + Math.random() * (max - min + 1));
@@ -44,7 +80,7 @@ var randomArr = (min, max) => {
 var urlRandNum = randomArr(1, PHOTO_COUNT);
 
 var getComments = () => {
-  var countComments = getRandomNum(1, 2);
+  var countComments = getRandomNum(COMMENTS_AMOUNT.MIN, COMMENTS_AMOUNT.MAX);
   var comments = [];
 
   while (comments.length !== countComments) {
@@ -61,7 +97,7 @@ var getComments = () => {
 var getPhotos = () => {
   var photos = [];
 
-  for (var i = 0; i < 25; i++) {
+  for (var i = 0; i < PHOTO_COUNT; i++) {
     var photo = {
       url: `photos/${urlRandNum[i]}.jpg`,
       likes: getRandomNum(LIKES_MIN, LIKES_MAX),
@@ -170,23 +206,31 @@ for (var i = 0, length = photos.length; i < length; i++) {
 
 document.querySelector(".pictures").appendChild(photosFragment);
 
-var uploadFile = document.querySelector('#upload-file');
-var imgUploadOverlay = document.querySelector('.img-upload__overlay');
-var imgUploadPreview = document.querySelector('.img-upload__preview').querySelector('img');
-var effectsItems = document.querySelectorAll('.effects__item');
+/*
+*  Загрузка фото и применение эффектов
+*
+* */
+
+var uploadFileButton = document.querySelector('#upload-file');
+var imgUploadPanel = document.querySelector('.img-upload__overlay');
+var imgUploadPicture = document.querySelector('.img-upload__preview > img');
+var effectItems = document.querySelectorAll('.effects__item');
+var scalePin = document.querySelector('.scale__pin');
+var scaleValue = document.querySelector('.scale__value');
+var EFFECT_MAX_LEVEL = 100;
 
 var onUploadFileChange = () => {
-  imgUploadOverlay.classList.remove('hidden');
-
+  imgUploadPanel.classList.remove('hidden');
+  var currentEffect = '';
   var uploadCancel = document.querySelector('#upload-cancel');
 
   var imgUploadClose = () => {
-    uploadFile.value  = '';
-    imgUploadOverlay.classList.add('hidden');
+    uploadFileButton.value  = '';
+    imgUploadPanel.classList.add('hidden');
     uploadCancel.removeEventListener('click', onUploadCancelClick);
     document.removeEventListener('down', onImgUploadEscDown);
-    imgUploadPreview.classList = [];
-    [...effectsItems].forEach(effectsItem => effectsItem.removeEventListener('click', onEffectsItemClick));
+    imgUploadPicture.classList = [];
+    [...effectItems].forEach(effectsItem => effectsItem.removeEventListener('click', onEffectsItemClick));
   };
 
   var onImgUploadEscDown = (evt) => {
@@ -200,25 +244,28 @@ var onUploadFileChange = () => {
   };
 
   var onEffectsItemClick = (evt) => {
-    if (evt.target.value) {
-      imgUploadPreview.classList = [];
-      imgUploadPreview.classList.add(`effects__preview--${evt.target.value}`);
+    currentEffect = evt.target.value;
+    if (currentEffect) {
+      imgUploadPicture.classList = [];
+      imgUploadPicture.classList.add(`effects__preview--${currentEffect}`);
     }
   };
-  [...effectsItems].forEach(effectsItem => effectsItem.addEventListener('click', onEffectsItemClick));
+  [...effectItems].forEach(effectsItem => effectsItem.addEventListener('click', onEffectsItemClick));
 
+
+  var onScalePinMouseUp = () => {
+    scaleValue.value = scalePin.left;
+    imgUploadPicture.style.filter = EFFECTS[currentEffect].setFilter(scaleValue);
+  };
+
+  scalePin.addEventListener('mouseup', onScalePinMouseUp);
 
   uploadCancel.addEventListener('click', onUploadCancelClick);
   document.addEventListener('keydown', onImgUploadEscDown);
 };
 
-uploadFile.addEventListener('change', onUploadFileChange);
+uploadFileButton.addEventListener('change', onUploadFileChange);
 
-var scalePin = document.querySelector('.scale__pin');
-var onScalePinMouseUp = () => {
 
-};
-
-scalePin.addEventListener('mouseup', onScalePinMouseUp);
 
 
