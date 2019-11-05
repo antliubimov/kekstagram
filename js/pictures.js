@@ -142,7 +142,6 @@ var renderPhoto = photo => {
       bigPictureClose();
     };
     var onBigPictureEscDown = evt => {
-      console.log(evt);
       if (evt.key === ESC_KEY) {
         bigPictureClose();
       }
@@ -170,3 +169,56 @@ for (var i = 0, length = photos.length; i < length; i++) {
 }
 
 document.querySelector(".pictures").appendChild(photosFragment);
+
+var uploadFile = document.querySelector('#upload-file');
+var imgUploadOverlay = document.querySelector('.img-upload__overlay');
+var imgUploadPreview = document.querySelector('.img-upload__preview').querySelector('img');
+var effectsItems = document.querySelectorAll('.effects__item');
+
+var onUploadFileChange = () => {
+  imgUploadOverlay.classList.remove('hidden');
+
+  var uploadCancel = document.querySelector('#upload-cancel');
+
+  var imgUploadClose = () => {
+    uploadFile.value  = '';
+    imgUploadOverlay.classList.add('hidden');
+    uploadCancel.removeEventListener('click', onUploadCancelClick);
+    document.removeEventListener('down', onImgUploadEscDown);
+    imgUploadPreview.classList = [];
+    [...effectsItems].forEach(effectsItem => effectsItem.removeEventListener('click', onEffectsItemClick));
+  };
+
+  var onImgUploadEscDown = (evt) => {
+    if (evt.key === ESC_KEY) {
+      imgUploadClose();
+    }
+  };
+
+  var onUploadCancelClick = () => {
+    imgUploadClose();
+  };
+
+  var onEffectsItemClick = (evt) => {
+    if (evt.target.value) {
+      imgUploadPreview.classList = [];
+      imgUploadPreview.classList.add(`effects__preview--${evt.target.value}`);
+    }
+  };
+  [...effectsItems].forEach(effectsItem => effectsItem.addEventListener('click', onEffectsItemClick));
+
+
+  uploadCancel.addEventListener('click', onUploadCancelClick);
+  document.addEventListener('keydown', onImgUploadEscDown);
+};
+
+uploadFile.addEventListener('change', onUploadFileChange);
+
+var scalePin = document.querySelector('.scale__pin');
+var onScalePinMouseUp = () => {
+
+};
+
+scalePin.addEventListener('mouseup', onScalePinMouseUp);
+
+
