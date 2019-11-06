@@ -392,10 +392,10 @@ var onUploadFileChange = () => {
 
 uploadFileButton.addEventListener('change', onUploadFileChange);
 
-
+// TODO: сделать нажатие на Pin
 var onScalePinMouseDown = () => {
   var valuePin = scalePin.style.left / 100;
   setPinPosition(valuePin);
 };
-
+//
 
