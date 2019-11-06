@@ -207,65 +207,115 @@ for (var i = 0, length = photos.length; i < length; i++) {
 document.querySelector(".pictures").appendChild(photosFragment);
 
 /*
-*  Загрузка фото и применение эффектов
-*
+*  Upload the photo and add a effect to it
 * */
 
 var uploadFileButton = document.querySelector('#upload-file');
 var imgUploadPanel = document.querySelector('.img-upload__overlay');
 var imgUploadPicture = document.querySelector('.img-upload__preview > img');
-var effectItems = document.querySelectorAll('.effects__item');
+var effectItems = document.querySelectorAll('.effects__item > input');
+var defaultEffect = document.querySelector('#effect-none');
+var uploadCancel = document.querySelector('#upload-cancel');
 var scalePin = document.querySelector('.scale__pin');
 var scaleValue = document.querySelector('.scale__value');
 var EFFECT_MAX_LEVEL = 100;
+var currentPictureClass;
+/**
+ * Sets the class of the loaded image according to effectName
+ * @param {string} effectName
+ */
+var setPictureClass = (effectName) => {
+  if (currentPictureClass) {
+    imgUploadPicture.classList.remove(currentPictureClass);
+  }
+  imgUploadPicture.classList.add(`effects__preview--${effectName}`);
+  currentPictureClass = `effects__preview--${effectName}`;
+};
+/**
+ * Return the scaled value for the effect according to effectName
+ * @param {number} value Value before scaling: from 0 to 100
+ * @param {string} effectName
+ * @returns {number} The scaling number
+ */
+const getEffectValue = (value, effectName) => {
+  const currentEffect = EFFECTS[effectName];
+  return currentEffect.min + value * (currentEffect.max - currentEffect.min) / EFFECT_MAX_LEVEL;
+};
+
+/**
+ * Set the css-style on the upload picture according to effect
+ * @param {string} effectName
+ */
+var setPictureEffect = (effectName) => {
+  var effectValue = getEffectValue(scaleValue.value, effectName);
+  imgUploadPicture.style.filter = EFFECTS[effectName].setFilter(effectValue);
+};
+
+/**
+ * Add eventlisteners on effectItems and set the class and the effect on the upload image
+ */
+var initialize = () => {
+  [...effectItems].forEach(effectsItem => effectsItem.addEventListener('click', onEffectsItemClick));
+  defaultEffect.checked = true;
+  setPictureClass(defaultEffect.value);
+  setPictureEffect(defaultEffect.value);
+};
+/**
+ * remove Eventlisteners on effectItems when the upload form is closed
+ */
+var finalize = () => {
+  [...effectItems].forEach(effectsItem => effectsItem.removeEventListener('click', onEffectsItemClick));
+};
+/**
+ * Close image's upload form
+ */
+var imgUploadClose = () => {
+  uploadFileButton.value  = '';
+  imgUploadPanel.classList.add('hidden');
+  uploadCancel.removeEventListener('click', onUploadCancelClick);
+  document.removeEventListener('down', onImgUploadEscDown);
+  finalize();
+};
+/**
+ * Click on Esc-button when the upload form is opened
+ * @param {Event} evt
+ */
+var onImgUploadEscDown = (evt) => {
+  if (evt.key === ESC_KEY) {
+    imgUploadClose();
+  }
+};
+/**
+ *  Click on the Cancel Button when the upload form is opened
+ */
+var onUploadCancelClick = () => {
+  imgUploadClose();
+};
+/**
+ * Handles effect click on the upload form
+ * @param {Event} evt
+ */
+var onEffectsItemClick = (evt) => {
+  console.log(evt);
+  var currentEffect = evt.target.value;
+  setPictureClass(currentEffect);
+  setPictureEffect(currentEffect);
+};
+
 
 var onUploadFileChange = () => {
   imgUploadPanel.classList.remove('hidden');
-  var currentEffect = '';
-  var uploadCancel = document.querySelector('#upload-cancel');
-
-  var imgUploadClose = () => {
-    uploadFileButton.value  = '';
-    imgUploadPanel.classList.add('hidden');
-    uploadCancel.removeEventListener('click', onUploadCancelClick);
-    document.removeEventListener('down', onImgUploadEscDown);
-    imgUploadPicture.classList = [];
-    [...effectItems].forEach(effectsItem => effectsItem.removeEventListener('click', onEffectsItemClick));
-  };
-
-  var onImgUploadEscDown = (evt) => {
-    if (evt.key === ESC_KEY) {
-      imgUploadClose();
-    }
-  };
-
-  var onUploadCancelClick = () => {
-    imgUploadClose();
-  };
-
-  var onEffectsItemClick = (evt) => {
-    currentEffect = evt.target.value;
-    if (currentEffect) {
-      imgUploadPicture.classList = [];
-      imgUploadPicture.classList.add(`effects__preview--${currentEffect}`);
-    }
-  };
-  [...effectItems].forEach(effectsItem => effectsItem.addEventListener('click', onEffectsItemClick));
-
-
-  var onScalePinMouseUp = () => {
-    scaleValue.value = scalePin.left;
-    imgUploadPicture.style.filter = EFFECTS[currentEffect].setFilter(scaleValue);
-  };
-
+  initialize();
   scalePin.addEventListener('mouseup', onScalePinMouseUp);
-
   uploadCancel.addEventListener('click', onUploadCancelClick);
   document.addEventListener('keydown', onImgUploadEscDown);
 };
 
 uploadFileButton.addEventListener('change', onUploadFileChange);
 
-
+var onScalePinMouseUp = () => {
+  scaleValue.value = scalePin.left;
+  // imgUploadPicture.style.filter = EFFECTS[currentEffect].setFilter(scaleValue);
+};
 
 
