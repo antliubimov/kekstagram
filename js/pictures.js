@@ -56,14 +56,28 @@ const EFFECTS = {
     setFilter: () => `none`
   }
 };
-
+/**
+ * Returns a random number from min-value to max-value (inclusive)
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ */
 var getRandomNum = (min, max) =>
   Math.round(min - 0.5 + Math.random() * (max - min + 1));
-
+/**
+ * Returns an random element from an array
+ * @param {array} elements
+ * @returns {element} element
+ */
 var getRandomElement = elements =>
   elements[getRandomNum(0, elements.length - 1)];
-
-var randomArr = (min, max) => {
+/**
+ * Returns array with numbers from min-value to max-value
+ * @param {number} min
+ * @param {number} max
+ * @returns {[]} array
+ */
+var getRandomArr = (min, max) => {
   var arr = [];
 
   while (arr.length !== max) {
@@ -77,9 +91,13 @@ var randomArr = (min, max) => {
   return arr;
 };
 
-var urlRandNum = randomArr(1, PHOTO_COUNT);
+var urlRandNum = getRandomArr(1, PHOTO_COUNT);
 
-var getComments = () => {
+/**
+ * Get array of comments
+ * @returns {[]}
+ */
+var getCommentsArray = () => {
   var countComments = getRandomNum(COMMENTS_AMOUNT.MIN, COMMENTS_AMOUNT.MAX);
   var comments = [];
 
@@ -93,7 +111,10 @@ var getComments = () => {
 
   return comments;
 };
-
+/**
+ * Get array of photo-objects
+ * @returns {[]}
+ */
 var getPhotos = () => {
   var photos = [];
 
@@ -101,7 +122,7 @@ var getPhotos = () => {
     var photo = {
       url: `photos/${urlRandNum[i]}.jpg`,
       likes: getRandomNum(LIKES_MIN, LIKES_MAX),
-      comments: getComments(),
+      comments: getCommentsArray(),
       description: getRandomElement(DESCRIPTIONS)
     };
 
@@ -113,94 +134,116 @@ var getPhotos = () => {
 
 var photos = getPhotos();
 
+/*
+* Render photos
+* */
 var photoTemplate = document
   .querySelector("#picture")
   .content.querySelector(".picture__link");
+var bigPicture = document.querySelector(".big-picture");
+var bigPictureCancel = bigPicture.querySelector(".big-picture__cancel");
+var bigPictureComments = bigPicture.querySelector(".social__comments");
+/**
+ * Close bigPicture
+ */
+var bigPictureClose = () => {
+  bigPicture
+    .querySelector(".big-picture__title")
+    .classList.add("visually-hidden");
+  bigPicture
+    .querySelector(".social__comment-count")
+    .classList.remove("visually-hidden");
+  bigPicture
+    .querySelector(".social__comment-loadmore")
+    .classList.remove("visually-hidden");
+  bigPicture.classList.add("hidden");
+  bigPictureCancel.removeEventListener("click", onBigPictureCancelClick);
+  document.removeEventListener("keydown", onBigPictureEscDown);
+};
+/**
+ * Click on bigPictureCancel button
+ */
+var onBigPictureCancelClick = () => {
+  bigPictureClose();
+};
+/**
+ * When press Esc bigPicture is closed
+ * @param evt
+ */
+var onBigPictureEscDown = (evt) => {
+  if (evt.key === ESC_KEY) {
+    bigPictureClose();
+  }
+};
+/**
+ * Click on photo
+ * @param {object} photo
+ */
+var onPhotoElementClick = (photo) => {
+  getBigPicture(photo);
+  bigPicture.classList.remove("hidden");
+};
+/**
+ * Return html-comments
+ * @param {object} photo
+ * @returns {string}
+ */
+var getComments = (photo) => {
+  var comments = "";
+  for (var i = 0; i < photo.comments.length; i += 1) {
+    var commentTemplate = `
+<li class="social__comment social__comment--text">
+    <img class="social__picture" src="img/avatar-${getRandomNum(1, 6)}.svg" alt="Аватар комментатора фотографии" width="35" height="35">
+    <p class="social__text">${photo.comments[i]}</p>
+</li>
+`;
+    comments += commentTemplate;
+  }
+  return comments;
+};
+/**
+ * Get bigPicture section
+ * @param {object} photo
+ */
+var getBigPicture = (photo) => {
+  bigPicture.querySelector(".big-picture__img > img").src = photo.url;
+  bigPicture.querySelector(".likes-count").textContent = photo.likes;
+  bigPicture.querySelector(".comments-count").textContent = photo.comments.length.toString();
+  bigPicture.querySelector(".social__caption").textContent = photo.description;
+  bigPictureComments.innerHTML = getComments(photo);
 
-var renderPhoto = photo => {
+  bigPicture
+    .querySelector(".big-picture__title")
+    .classList.remove("visually-hidden");
+  bigPicture
+    .querySelector(".social__comment-count")
+    .classList.add("visually-hidden");
+  bigPicture
+    .querySelector(".social__comment-loadmore")
+    .classList.add("visually-hidden");
+
+  bigPictureCancel.addEventListener("click", onBigPictureCancelClick);
+  document.addEventListener("keydown", onBigPictureEscDown);
+};
+/**
+ * Render photo-element
+ * @param {object} photo
+ * @returns {Node}
+ */
+var renderPhoto = (photo) => {
   var photoElement = photoTemplate.cloneNode(true);
   photoElement.querySelector(".picture__img").src = photo.url;
   photoElement.querySelector(".picture__stat--likes").textContent = photo.likes;
   photoElement.querySelector(".picture__stat--comments");
-  var createBigPicture = () => {
-    var bigPicture = document.querySelector(".big-picture");
 
-    bigPicture.querySelector(".big-picture__img").querySelector("img").src =
-      photo.url;
-    bigPicture.querySelector(".likes-count").textContent = photo.likes;
-    bigPicture.querySelector(".comments-count").textContent =
-      photo.comments.length;
-
-    var commentsUl = bigPicture.querySelector(".social__comments");
-    commentsUl.innerHTML = "";
-    for (var j = 0; j < photo.comments.length; j++) {
-      var commentTemplate = `
-<li class="social__comment social__comment--text">
-    <img class="social__picture" src="img/avatar-${getRandomNum(
-      1,
-      6
-    )}.svg" alt="Аватар комментатора фотографии" width="35" height="35">
-    <p class="social__text">${photo.comments[j]}</p>
-</li>
-`;
-      commentsUl.innerHTML += commentTemplate;
-    }
-    bigPicture
-      .querySelector(".big-picture__title")
-      .classList.remove("visually-hidden");
-    bigPicture.querySelector(".social__caption").textContent =
-      photo.description;
-
-    bigPicture
-      .querySelector(".social__comment-count")
-      .classList.add("visually-hidden");
-    bigPicture
-      .querySelector(".social__comment-loadmore")
-      .classList.add("visually-hidden");
-
-    var bigPictureCancel = bigPicture.querySelector(".big-picture__cancel");
-
-    var bigPictureClose = () => {
-      bigPicture
-        .querySelector(".big-picture__title")
-        .classList.add("visually-hidden");
-      bigPicture
-        .querySelector(".social__comment-count")
-        .classList.remove("visually-hidden");
-      bigPicture
-        .querySelector(".social__comment-loadmore")
-        .classList.remove("visually-hidden");
-      bigPictureCancel.removeEventListener("click", onBigPictureCancelClick);
-      document.removeEventListener("keydown", onBigPictureEscDown);
-      bigPicture.classList.add("hidden");
-    };
-    var onBigPictureCancelClick = () => {
-      bigPictureClose();
-    };
-    var onBigPictureEscDown = evt => {
-      if (evt.key === ESC_KEY) {
-        bigPictureClose();
-      }
-    };
-
-    bigPictureCancel.addEventListener("click", onBigPictureCancelClick);
-    document.addEventListener("keydown", onBigPictureEscDown);
-  };
-
-  var onPhotoElementClick = e => {
-    e.preventDefault();
-    createBigPicture();
-    document.querySelector(".big-picture").classList.remove("hidden");
-  };
-
-  photoElement.addEventListener("click", onPhotoElementClick);
+  photoElement.addEventListener("click", onPhotoElementClick.bind(null, photo));
 
   return photoElement;
 };
 
 var photosFragment = document.createDocumentFragment();
 
-for (var i = 0, length = photos.length; i < length; i++) {
+for (var i = 0, length = photos.length; i < length; i += 1) {
   photosFragment.appendChild(renderPhoto(photos[i]));
 }
 
