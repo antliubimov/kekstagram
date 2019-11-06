@@ -216,8 +216,10 @@ var imgUploadPicture = document.querySelector('.img-upload__preview > img');
 var effectItems = document.querySelectorAll('.effects__item > input');
 var defaultEffect = document.querySelector('#effect-none');
 var uploadCancel = document.querySelector('#upload-cancel');
+var scalePanel = document.querySelector('.img-upload__scale');
 var scalePin = document.querySelector('.scale__pin');
 var scaleValue = document.querySelector('.scale__value');
+var scaleLevel = document.querySelector('.scale__level');
 var EFFECT_MAX_LEVEL = 100;
 var currentPictureClass;
 /**
@@ -259,6 +261,7 @@ var initialize = () => {
   defaultEffect.checked = true;
   setPictureClass(defaultEffect.value);
   setPictureEffect(defaultEffect.value);
+  hide();
 };
 /**
  * remove Eventlisteners on effectItems when the upload form is closed
@@ -296,26 +299,60 @@ var onUploadCancelClick = () => {
  * @param {Event} evt
  */
 var onEffectsItemClick = (evt) => {
-  console.log(evt);
-  var currentEffect = evt.target.value;
-  setPictureClass(currentEffect);
-  setPictureEffect(currentEffect);
+  var selectedEffect = evt.target.value;
+  if (selectedEffect === defaultEffect.value) {
+    hide();
+  } else {
+    show();
+
+  }
+  setPinPosition(EFFECT_MAX_LEVEL);
+  setPictureClass(selectedEffect);
+  setPictureEffect(selectedEffect);
 };
 
+/**
+ * Set the pin position and change css-style for scalePin and scaleLevel
+ * @param {number} value The value from 0 to 100 %
+ */
+var setPinPosition = (value) => {
+  scaleValue.value = Math.round(value);
+  scalePin.style.left = `${value}%`;
+  scaleLevel.style.width = `${value}%`;
+};
 
+/**
+ * Hide scale panel
+ */
+var hide = () => {
+  scalePanel.classList.add('hidden');
+  scalePin.removeEventListener('mousedown', onScalePinMouseDown);
+};
+/**
+ * Show scale panel
+ */
+var show = () => {
+  if (scalePanel.classList.contains('hidden')) {
+    scalePanel.classList.remove('hidden');
+    scalePin.addEventListener('mousedown', onScalePinMouseDown);
+  }
+};
+/**
+ * Change on uploadFile-input
+ */
 var onUploadFileChange = () => {
   imgUploadPanel.classList.remove('hidden');
   initialize();
-  scalePin.addEventListener('mouseup', onScalePinMouseUp);
   uploadCancel.addEventListener('click', onUploadCancelClick);
   document.addEventListener('keydown', onImgUploadEscDown);
 };
 
 uploadFileButton.addEventListener('change', onUploadFileChange);
 
-var onScalePinMouseUp = () => {
-  scaleValue.value = scalePin.left;
-  // imgUploadPicture.style.filter = EFFECTS[currentEffect].setFilter(scaleValue);
+
+var onScalePinMouseDown = () => {
+  var valuePin = scalePin.style.left / 100;
+  setPinPosition(valuePin);
 };
 
 
