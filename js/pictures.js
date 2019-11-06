@@ -399,3 +399,19 @@ var onScalePinMouseDown = () => {
 };
 //
 
+/*
+* Hash-tags
+* */
+
+var hashTags = document.querySelector('.text__hashtags');
+var textDescription = document.querySelector('.text__description');
+
+var onTextDescriptionInput = () => {
+  console.log(textDescription.value);
+  if (textDescription.validity.tooLong) {
+    textDescription.setCustomValidity('Сообщение должно быть не более 140 символов.');
+  }
+  textDescription.setCustomValidity('');
+};
+textDescription.addEventListener('input', onTextDescriptionInput);
+
