@@ -264,8 +264,10 @@ var scalePanel = document.querySelector('.img-upload__scale');
 var scalePin = document.querySelector('.scale__pin');
 var scaleValue = document.querySelector('.scale__value');
 var scaleLevel = document.querySelector('.scale__level');
-var hashTags = document.querySelector('.text__hashtags');
-var textDescription = document.querySelector('.text__description');
+var uploadForm = document.querySelector('.img-upload__text');
+var hashTagsField = document.querySelector('.text__hashtags');
+var commentField = document.querySelector('.text__description');
+var submitButton = document.querySelector('#upload-submit');
 var EFFECT_MAX_LEVEL = 100;
 var currentPictureClass;
 /**
@@ -330,7 +332,7 @@ var imgUploadClose = () => {
  * @param {Event} evt
  */
 var onImgUploadEscDown = (evt) => {
-  if (evt.key === ESC_KEY && document.activeElement !== textDescription && document.activeElement !== hashTags) {
+  if (evt.key === ESC_KEY && document.activeElement !== commentField && document.activeElement !== hashTagsField) {
     imgUploadClose();
   }
 };
@@ -403,40 +405,95 @@ var onScalePinMouseDown = () => {
 //
 
 /*
-* Hash-tags
+* Validation Hash-tags and comment
 * */
+var hashTag = {
+  SYMBOL: '#',
+  MIN_SIZE: 2,
+  MAX_SIZE: 20,
+  AMOUNT: 5
+};
+
+const COMMENT_MAX_SIZE = 140;
+const ERROR_STYLE = `2px solid #ff0000`;
+/**
+ * Returns the array without the deleted element
+ * @param {Array} initialArray
+ * @param {*} deletedElement
+ * @returns {Array}
+ */
+var getArrayWithoutElement = (initialArray, deletedElement) => initialArray.filter(element => element !== deletedElement);
+
+/**
+ * Returns the array with lowercase-elements without empty element
+ * @param str
+ * @returns {Array}
+ */
+var getHashTagsArray = (str) => {
+  var hashTagsArray = str.split(' ').map(hashTag => hashTag.toLowerCase());
+  return getArrayWithoutElement(hashTagsArray, '');
+};
+
 var onHashTagsInput = (evt) => {
-  var hashTagsArr = evt.target.value.split(' ').map(hashtag => hashtag.toLowerCase());
+  var hashTagsArr = getHashTagsArray(evt.target.value);
   var hashTagsArrLength = hashTagsArr.length;
   var filterArr = hashTagsArr.filter(hashtag => hashtag[0] === '#');
-  var filterLengthArr = hashTagsArr.filter(hashtag => hashtag.length > 20);
+  var filterLengthArr = hashTagsArr.filter(hashtag => hashtag.length > hashTag.MAX_SIZE);
   var filterSymbolArr = hashTagsArr.filter(hashtag => hashtag.match(/[^#a-zA-Z0-9а-яА-Я]/g));
   var noRepeatHashTags = new Set(hashTagsArr);
   if (hashTagsArrLength !== filterArr.length) {
-    hashTags.setCustomValidity('Каждый хэш-тег должен начинаться со знака #');
+    hashTagsField.setCustomValidity('Каждый хэш-тег должен начинаться со знака #');
   } else if (filterSymbolArr.length !== 0) {
-    hashTags.setCustomValidity('Каждый хеш-тег должен содержать знак решетки, затем буквы английского или русского алфавита и цифры');
+    hashTagsField.setCustomValidity('Каждый хеш-тег должен содержать знак решетки, затем буквы английского или русского алфавита и цифры');
   } else if (hashTagsArr.includes('#')) {
-    hashTags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
+    hashTagsField.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
   } else if (hashTagsArrLength !== noRepeatHashTags.size) {
-    hashTags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
-  } else if (hashTagsArrLength > 5) {
-    hashTags.setCustomValidity('Нельзя указать больше пяти хэш-тегов');
+    hashTagsField.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
+  } else if (hashTagsArrLength > hashTag.AMOUNT) {
+    hashTagsField.setCustomValidity('Нельзя указать больше пяти хэш-тегов');
   } else if (filterLengthArr.length > 0) {
-    hashTags.setCustomValidity('Максимальная длина одного хэш-тега 20 символов, включая решётку');
+    hashTagsField.setCustomValidity('Максимальная длина одного хэш-тега 20 символов, включая решётку');
   } else {
-    hashTags.setCustomValidity('');
+    hashTagsField.setCustomValidity('');
   }
 };
-hashTags.addEventListener('input', onHashTagsInput);
+hashTagsField.addEventListener('input', onHashTagsInput);
+
+
+
+/**
+ * Check max length of data-comments, if it is wrong shows error-message.
+ * @param {String} data
+ */
+var checkComment = (data) => {
+  if (data.length > COMMENT_MAX_SIZE) {
+    data.setCustomValidity(`Длина комментария должно быть не более ${COMMENT_MAX_SIZE} символов. Текущая длина комментария ${data.length} символов`);
+  } else {
+    data.setCustomValidity('');
+  }
+}
 
 var onTextDescriptionInput = (evt) => {
-  var description = evt.target;
-  if (description.value.length > 140) {
-    description.setCustomValidity('Сообщение должно быть не более 140 символов.');
-  } else {
-  description.setCustomValidity('');
-  }
+ checkComment(evt.target);
 };
-textDescription.addEventListener('input', onTextDescriptionInput);
+commentField.addEventListener('input', onTextDescriptionInput);
+
+var CustomValidation = (input) => {
+
+};
+
+var hashTagsFieldValidityChecks = [
+
+];
+
+hashTagsField.CustomValidation = new CustomValidation(hashTagsField);
+hashTagsField.CustomValidation.validityChecks = hashTagsFieldValidityChecks;
+
+var validate = () => {
+  hashTagsField.CustomValidation.checkInput();
+};
+
+
+submitButton.addEventListener('click', validate);
+uploadForm.addEventListener('submit', validate);
 
