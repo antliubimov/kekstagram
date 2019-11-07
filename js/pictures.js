@@ -405,17 +405,37 @@ var onScalePinMouseDown = () => {
 /*
 * Hash-tags
 * */
-
-
+var onHashTagsInput = (evt) => {
+  var hashTagsArr = evt.target.value.split(' ').map(hashtag => hashtag.toLowerCase());
+  var hashTagsArrLength = hashTagsArr.length;
+  var filterArr = hashTagsArr.filter(hashtag => hashtag[0] === '#');
+  var filterLengthArr = hashTagsArr.filter(hashtag => hashtag.length > 20);
+  var filterSymbolArr = hashTagsArr.filter(hashtag => hashtag.match(/[^#a-zA-Z0-9а-яА-Я]/g));
+  var noRepeatHashTags = new Set(hashTagsArr);
+  if (hashTagsArrLength !== filterArr.length) {
+    hashTags.setCustomValidity('Каждый хэш-тег должен начинаться со знака #');
+  } else if (filterSymbolArr.length !== 0) {
+    hashTags.setCustomValidity('Каждый хеш-тег должен содержать знак решетки, затем буквы английского или русского алфавита и цифры');
+  } else if (hashTagsArr.includes('#')) {
+    hashTags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
+  } else if (hashTagsArrLength !== noRepeatHashTags.size) {
+    hashTags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
+  } else if (hashTagsArrLength > 5) {
+    hashTags.setCustomValidity('Нельзя указать больше пяти хэш-тегов');
+  } else if (filterLengthArr.length > 0) {
+    hashTags.setCustomValidity('Максимальная длина одного хэш-тега 20 символов, включая решётку');
+  } else {
+    hashTags.setCustomValidity('');
+  }
+};
+hashTags.addEventListener('input', onHashTagsInput);
 
 var onTextDescriptionInput = (evt) => {
-  console.log(evt.target.value);
-  console.log(evt.target.value.length);
-  if (evt.target.value.length > 140) {
-    evt.target.setCustomValidity('Сообщение должно быть не более 140 символов.');
+  var description = evt.target;
+  if (description.value.length > 140) {
+    description.setCustomValidity('Сообщение должно быть не более 140 символов.');
   } else {
-  evt.target.setCustomValidity('');
-
+  description.setCustomValidity('');
   }
 };
 textDescription.addEventListener('input', onTextDescriptionInput);
