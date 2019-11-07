@@ -143,6 +143,7 @@ var photoTemplate = document
 var bigPicture = document.querySelector(".big-picture");
 var bigPictureCancel = bigPicture.querySelector(".big-picture__cancel");
 var bigPictureComments = bigPicture.querySelector(".social__comments");
+
 /**
  * Close bigPicture
  */
@@ -263,6 +264,8 @@ var scalePanel = document.querySelector('.img-upload__scale');
 var scalePin = document.querySelector('.scale__pin');
 var scaleValue = document.querySelector('.scale__value');
 var scaleLevel = document.querySelector('.scale__level');
+var hashTags = document.querySelector('.text__hashtags');
+var textDescription = document.querySelector('.text__description');
 var EFFECT_MAX_LEVEL = 100;
 var currentPictureClass;
 /**
@@ -327,7 +330,7 @@ var imgUploadClose = () => {
  * @param {Event} evt
  */
 var onImgUploadEscDown = (evt) => {
-  if (evt.key === ESC_KEY) {
+  if (evt.key === ESC_KEY && document.activeElement !== textDescription && document.activeElement !== hashTags) {
     imgUploadClose();
   }
 };
@@ -403,15 +406,17 @@ var onScalePinMouseDown = () => {
 * Hash-tags
 * */
 
-var hashTags = document.querySelector('.text__hashtags');
-var textDescription = document.querySelector('.text__description');
 
-var onTextDescriptionInput = () => {
-  console.log(textDescription.value);
-  if (textDescription.validity.tooLong) {
-    textDescription.setCustomValidity('Сообщение должно быть не более 140 символов.');
+
+var onTextDescriptionInput = (evt) => {
+  console.log(evt.target.value);
+  console.log(evt.target.value.length);
+  if (evt.target.value.length > 140) {
+    evt.target.setCustomValidity('Сообщение должно быть не более 140 символов.');
+  } else {
+  evt.target.setCustomValidity('');
+
   }
-  textDescription.setCustomValidity('');
 };
 textDescription.addEventListener('input', onTextDescriptionInput);
 
