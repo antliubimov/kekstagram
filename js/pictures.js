@@ -273,6 +273,7 @@ var EFFECT_LEVEL = {
   MAX: 100,
 };
 var currentPictureClass;
+var currentEffect;
 /**
  * Sets the class of the loaded image according to effectName
  * @param {string} effectName
@@ -281,9 +282,11 @@ var setPictureClass = (effectName) => {
   if (currentPictureClass) {
     imgUploadPicture.classList.remove(currentPictureClass);
   }
+  currentEffect = effectName;
   imgUploadPicture.classList.add(`effects__preview--${effectName}`);
   currentPictureClass = `effects__preview--${effectName}`;
 };
+
 /**
  * Return the scaled value for the effect according to effectName
  * @param {number} value Value before scaling: from 0 to 100
@@ -567,12 +570,13 @@ const onScalePinMouseDown = (evt) => {
     const valuePin = Math.round(shiftScalePin * EFFECT_LEVEL.MAX / scaleLineWidth);
     if (valuePin >= EFFECT_LEVEL.MIN && valuePin <= EFFECT_LEVEL.MAX) {
       setPinPosition(valuePin);
+      setPictureEffect(currentEffect);
     }
   };
 
   const onMouseUp = (upEvt) => {
     upEvt.preventDefault();
-
+    startCoordX = upEvt;
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   };
