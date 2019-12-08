@@ -175,7 +175,7 @@
     uploadFileButton.value = "";
     imgUploadPanel.classList.add("hidden");
     uploadCancel.removeEventListener("click", onUploadCancelClick);
-    document.removeEventListener("down", onImgUploadEscDown);
+    document.removeEventListener("keydown", onImgUploadEscDown);
     finalizeEffects();
   };
 
