@@ -17,11 +17,10 @@
     photoElement.querySelector(".picture__stat--likes").textContent =
       photo.likes;
     photoElement.querySelector(".picture__stat--comments");
-
-    photoElement.addEventListener(
-      "click",
-      window.gallery.onPhotoElementClick.bind(null, photo)
-    );
+    // photoElement.addEventListener(
+    //   "click",
+    //   window.gallery.onPhotoElementClick.bind(null, photo);
+    // );
 
     return photoElement;
   };

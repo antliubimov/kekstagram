@@ -8,14 +8,6 @@
   const bigPicture = document.querySelector(".big-picture");
   const bigPictureComments = bigPicture.querySelector(".social__comments");
 
-  const photosFragment = document.createDocumentFragment();
-  const { photos } = window.data;
-  for (let i = 0, { length } = photos; i < length; i += 1) {
-    photosFragment.appendChild(window.picture.renderPhoto(photos[i]));
-  }
-
-  document.querySelector(".pictures").appendChild(photosFragment);
-
   /**
    * Get bigPicture section
    * @param {object} photo
@@ -46,7 +38,6 @@
     );
     document.addEventListener("keydown", window.preview.onBigPictureEscDown);
   };
-
   /**
    * Click on photo
    * @param {object} photo
@@ -56,7 +47,16 @@
     bigPicture.classList.remove("hidden");
   };
 
-  window.gallery = {
-    onPhotoElementClick
-  };
+  const photosFragment = document.createDocumentFragment();
+  const { photos } = window.data;
+  for (let i = 0, { length } = photos; i < length; i += 1) {
+    const photoElement = window.picture.renderPhoto(photos[i]);
+    photoElement.addEventListener(
+      "click",
+      onPhotoElementClick.bind(null, photos[i])
+    );
+    photosFragment.appendChild(photoElement);
+  }
+
+  document.querySelector(".pictures").appendChild(photosFragment);
 })();
