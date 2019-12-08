@@ -35,6 +35,10 @@
       setFilter: () => `none`
     }
   };
+  const EFFECT_LEVEL = {
+    MIN: 0,
+    MAX: 100
+  };
 
   let currentPictureClass;
   let currentEffect;
@@ -51,6 +55,7 @@
   const scalePanel = document.querySelector(".img-upload__scale");
   const scalePin = document.querySelector(".scale__pin");
   const scaleValue = document.querySelector(".scale__value");
+  const scaleLevel = document.querySelector(".scale__level");
   const hashTagsField = document.querySelector(".text__hashtags");
   const commentField = document.querySelector(".text__description");
 
@@ -62,10 +67,7 @@
    */
   const getEffectValue = (value, effectName) => {
     const effect = EFFECTS[effectName];
-    return (
-      effect.min +
-      (value * (effect.max - effect.min)) / window.scaleEffect.EFFECT_LEVEL.MAX
-    );
+    return effect.min + (value * (effect.max - effect.min)) / EFFECT_LEVEL.MAX;
   };
 
   /**
@@ -95,10 +97,7 @@
    */
   const hide = () => {
     scalePanel.classList.add("hidden");
-    scalePin.removeEventListener(
-      "mousedown",
-      window.scaleEffect.onScalePinMouseDown
-    );
+    scalePin.removeEventListener("mousedown", onScalePinMouseDown);
   };
   /**
    * Show scale panel
@@ -106,10 +105,7 @@
   const show = () => {
     if (scalePanel.classList.contains("hidden")) {
       scalePanel.classList.remove("hidden");
-      scalePin.addEventListener(
-        "mousedown",
-        window.scaleEffect.onScalePinMouseDown
-      );
+      scalePin.addEventListener("mousedown", onScalePinMouseDown);
     }
   };
 
@@ -132,8 +128,19 @@
   const onUploadFileChange = () => {
     imgUploadPanel.classList.remove("hidden");
     initializeEffects();
+    window.formValidity.initializeValidity();
     uploadCancel.addEventListener("click", onUploadCancelClick);
     document.addEventListener("keydown", onImgUploadEscDown);
+  };
+
+  /**
+   * Set the pin position and change css-style for scalePin and scaleLevel
+   * @param {number} value The value from 0 to 100 %
+   */
+  const setPinPosition = value => {
+    scaleValue.value = value;
+    scalePin.style.left = `${value}%`;
+    scaleLevel.style.width = `${value}%`;
   };
 
   /**
@@ -147,7 +154,7 @@
     } else {
       show();
     }
-    window.scaleEffect.setPinPosition(window.scaleEffect.EFFECT_LEVEL.MAX);
+    setPinPosition(EFFECT_LEVEL.MAX);
     setPictureClass(selectedEffect);
     setPictureEffect(selectedEffect);
   };
@@ -194,8 +201,36 @@
 
   uploadFileButton.addEventListener("change", onUploadFileChange);
 
-  window.form = {
-    currentEffect,
-    setPictureEffect
+  const onScalePinMouseDown = evt => {
+    evt.preventDefault();
+    const scaleLineWidth = document.querySelector(".scale__line").offsetWidth;
+    let startCoordX = evt.clientX;
+
+    const onMouseMove = moveEvt => {
+      moveEvt.preventDefault();
+
+      const shift = startCoordX - moveEvt.clientX;
+      const shiftScalePin = scalePin.offsetLeft - shift;
+      startCoordX = moveEvt.clientX;
+      const valuePin = Math.round(
+        (shiftScalePin * EFFECT_LEVEL.MAX) / scaleLineWidth
+      );
+      if (valuePin >= EFFECT_LEVEL.MIN && valuePin <= EFFECT_LEVEL.MAX) {
+        setPinPosition(valuePin);
+        setPictureEffect(currentEffect);
+      }
+    };
+
+    const onMouseUp = upEvt => {
+      upEvt.preventDefault();
+      startCoordX = upEvt;
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    };
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
   };
+
+  scalePin.addEventListener("mousedown", onScalePinMouseDown);
 })();
