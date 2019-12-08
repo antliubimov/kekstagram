@@ -268,7 +268,10 @@ var uploadForm = document.querySelector('.img-upload__text');
 var hashTagsField = document.querySelector('.text__hashtags');
 var commentField = document.querySelector('.text__description');
 var submitButton = document.querySelector('#upload-submit');
-var EFFECT_MAX_LEVEL = 100;
+var EFFECT_LEVEL = {
+  MIN: 0,
+  MAX: 100,
+};
 var currentPictureClass;
 /**
  * Sets the class of the loaded image according to effectName
@@ -289,7 +292,7 @@ var setPictureClass = (effectName) => {
  */
 const getEffectValue = (value, effectName) => {
   const currentEffect = EFFECTS[effectName];
-  return currentEffect.min + value * (currentEffect.max - currentEffect.min) / EFFECT_MAX_LEVEL;
+  return currentEffect.min + value * (currentEffect.max - currentEffect.min) / EFFECT_LEVEL.MAX;
 };
 
 /**
@@ -352,21 +355,10 @@ var onEffectsItemClick = (evt) => {
     hide();
   } else {
     show();
-
   }
-  setPinPosition(EFFECT_MAX_LEVEL);
+  setPinPosition(EFFECT_LEVEL.MAX);
   setPictureClass(selectedEffect);
   setPictureEffect(selectedEffect);
-};
-
-/**
- * Set the pin position and change css-style for scalePin and scaleLevel
- * @param {number} value The value from 0 to 100 %
- */
-var setPinPosition = (value) => {
-  scaleValue.value = Math.round(value);
-  scalePin.style.left = `${value}%`;
-  scaleLevel.style.width = `${value}%`;
 };
 
 /**
@@ -396,13 +388,6 @@ var onUploadFileChange = () => {
 };
 
 uploadFileButton.addEventListener('change', onUploadFileChange);
-
-// TODO: сделать нажатие на Pin
-var onScalePinMouseDown = () => {
-  var valuePin = scalePin.style.left / 100;
-  setPinPosition(valuePin);
-};
-//
 
 /*
 * Validation Hash-tags and comment
@@ -554,3 +539,46 @@ const initializeValidity = () => {
 };
 
 initializeValidity();
+
+
+// Drag-n-drop
+/**
+ * Set the pin position and change css-style for scalePin and scaleLevel
+ * @param {number} value The value from 0 to 100 %
+ */
+var setPinPosition = (value) => {
+  scaleValue.value = value;
+  scalePin.style.left = `${value}%`;
+  scaleLevel.style.width = `${value}%`;
+};
+
+
+const onScalePinMouseDown = (evt) => {
+  evt.preventDefault();
+  const scaleLineWidth = document.querySelector('.scale__line').offsetWidth;
+  let startCoordX = evt.clientX;
+
+  const onMouseMove = (moveEvt) => {
+    moveEvt.preventDefault();
+
+    const shift = startCoordX - moveEvt.clientX;
+    const shiftScalePin = scalePin.offsetLeft - shift;
+    startCoordX = moveEvt.clientX;
+    const valuePin = Math.round(shiftScalePin * EFFECT_LEVEL.MAX / scaleLineWidth);
+    if (valuePin >= EFFECT_LEVEL.MIN && valuePin <= EFFECT_LEVEL.MAX) {
+      setPinPosition(valuePin);
+    }
+  };
+
+  const onMouseUp = (upEvt) => {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+};
+
+scalePin.addEventListener('mousedown', onScalePinMouseDown);
