@@ -1,7 +1,7 @@
 // data.js
-'use strict';
+"use strict";
 
-(function () {
+(function() {
   const PHOTO_COUNT = 25;
   const LIKES_MIN = 15;
   const LIKES_MAX = 200;
@@ -33,7 +33,10 @@
    * @returns {[]}
    */
   const getCommentsArray = () => {
-    const countComments = window.utils.getRandomNum(COMMENTS_AMOUNT.MIN, COMMENTS_AMOUNT.MAX);
+    const countComments = window.utils.getRandomNum(
+      COMMENTS_AMOUNT.MIN,
+      COMMENTS_AMOUNT.MAX
+    );
     const comments = [];
 
     while (comments.length !== countComments) {
@@ -53,7 +56,7 @@
   const getPhotos = () => {
     const photos = [];
 
-    for (var i = 0; i < PHOTO_COUNT; i++) {
+    for (let i = 0; i < PHOTO_COUNT; i += 1) {
       const photo = {
         url: `photos/${urlRandNum[i]}.jpg`,
         likes: window.utils.getRandomNum(LIKES_MIN, LIKES_MAX),
@@ -69,7 +72,7 @@
 
   const photos = getPhotos();
 
-  return window.data = {
-    photos,
+  window.data = {
+    photos
   };
 })();
