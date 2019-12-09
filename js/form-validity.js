@@ -70,7 +70,7 @@
     },
     {
       message: "Хеш-тег не может состоять только из одной решётки",
-      check: arg => arg.some(elem => elem.length < hashTag.MIN_SIZE)
+      check: arg => arg.some(elem => elem.length <= hashTag.MIN_SIZE)
     },
     {
       message: "Хэш-тэги должны быть уникальными",
