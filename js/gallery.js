@@ -47,16 +47,47 @@
     bigPicture.classList.remove("hidden");
   };
 
-  const photosFragment = document.createDocumentFragment();
-  const { photos } = window.data;
-  for (let i = 0, { length } = photos; i < length; i += 1) {
-    const photoElement = window.picture.renderPhoto(photos[i]);
-    photoElement.addEventListener(
-      "click",
-      onPhotoElementClick.bind(null, photos[i])
-    );
-    photosFragment.appendChild(photoElement);
-  }
 
-  document.querySelector(".pictures").appendChild(photosFragment);
+  const onLoadPhotos = (photos) => {
+    console.log(photos);
+    const photosFragment = document.createDocumentFragment();
+    for (let i = 0, { length } = photos; i < length; i += 1) {
+      const photoElement = window.picture.renderPhoto(photos[i]);
+      photoElement.addEventListener(
+        "click",
+        onPhotoElementClick.bind(null, photos[i])
+      );
+      photosFragment.appendChild(photoElement);
+    }
+
+    document.querySelector(".pictures").appendChild(photosFragment);
+  };
+
+  const errorPopup = document.querySelector('.error-popup');
+  const errorPopupCancel = document.querySelector('.error-popup__cancel');
+  const errorPopupMessage = document.querySelector('.error-popup__message');
+
+  const onErrorHandler = (errorMessage) => {
+    errorPopup.classList.remove('hidden');
+    errorPopupMessage.textContent = errorMessage;
+    errorPopupCancel.addEventListener('click', onErrorPopupCancelClick);
+    document.addEventListener('keydown', onErroPopupEscDown);
+  };
+
+  const onErrorPopupCancelClick = () => {
+    errorPopup.classList.add('hidden');
+    errorPopupCancel.removeEventListener('click', onErrorPopupCancelClick);
+    document.removeEventListener('keydown', onErroPopupEscDown);
+  };
+  const onErroPopupEscDown = (evt) => {
+    if (evt.key === 'Escape') {
+      errorPopup.classList.add('hidden');
+      errorPopupCancel.removeEventListener('click', onErrorPopupCancelClick);
+      document.removeEventListener('keydown', onErroPopupEscDown);
+    }
+  };
+
+     window.backend.upLoad(onLoadPhotos, onErrorHandler);
+  //const { photos } = window.data;
+
 })();
