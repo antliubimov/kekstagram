@@ -74,16 +74,18 @@
     document.addEventListener('keydown', onErroPopupEscDown);
   };
 
-  const onErrorPopupCancelClick = () => {
+  const closeErrorPopup = () => {
     errorPopup.classList.add('hidden');
     errorPopupCancel.removeEventListener('click', onErrorPopupCancelClick);
     document.removeEventListener('keydown', onErroPopupEscDown);
   };
+
+  const onErrorPopupCancelClick = () => {
+    closeErrorPopup();
+  };
   const onErroPopupEscDown = (evt) => {
     if (evt.key === 'Escape') {
-      errorPopup.classList.add('hidden');
-      errorPopupCancel.removeEventListener('click', onErrorPopupCancelClick);
-      document.removeEventListener('keydown', onErroPopupEscDown);
+      closeErrorPopup();
     }
   };
 
