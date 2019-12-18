@@ -71,19 +71,19 @@
     errorPopup.classList.remove('hidden');
     errorPopupMessage.textContent = errorMessage;
     errorPopupCancel.addEventListener('click', onErrorPopupCancelClick);
-    document.addEventListener('keydown', onErroPopupEscDown);
+    document.addEventListener('keydown', onErrorPopupEscDown);
   };
 
   const closeErrorPopup = () => {
     errorPopup.classList.add('hidden');
     errorPopupCancel.removeEventListener('click', onErrorPopupCancelClick);
-    document.removeEventListener('keydown', onErroPopupEscDown);
+    document.removeEventListener('keydown', onErrorPopupEscDown);
   };
 
   const onErrorPopupCancelClick = () => {
     closeErrorPopup();
   };
-  const onErroPopupEscDown = (evt) => {
+  const onErrorPopupEscDown = (evt) => {
     if (evt.key === 'Escape') {
       closeErrorPopup();
     }
