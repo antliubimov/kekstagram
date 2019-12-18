@@ -3,6 +3,7 @@
 
 (function () {
   const URL = 'https://js.dump.academy/kekstagram';
+  const XHR_TIMEOUT = 10000;
   /**
    * create XMLHTTPRequest
    * @param method
@@ -14,9 +15,10 @@
   const createXHR = (method, url, onLoad, onError) => {
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
-
-    if (xhr.status === 200) {
-      onLoad(xhr.response);
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        onLoad(xhr.response);
+      }
     } else {
       onError(`The status of response ${xhr.status} ${xhr.statusText}`);
     }
@@ -29,7 +31,7 @@
       onError(`the request did not manage to be executed for ${xhr.timeout} ms`);
     });
 
-    xhr.timeout = 10000;
+    xhr.timeout = XHR_TIMEOUT;
 
     xhr.open(method, url);
     return xhr;
