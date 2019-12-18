@@ -16,11 +16,13 @@
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
-    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-      onLoad(xhr.response);
-    } else {
-      onError(`The status of response ${xhr.status} ${xhr.statusText}`);
-    }
+    xhr.addEventListener('load', () => {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        onLoad(xhr.response);
+      } else {
+        onError(`The status of response ${xhr.status} ${xhr.statusText}`);
+      }
+    });
 
     xhr.addEventListener('error', () => {
       onError(`Connection error occurred`);
