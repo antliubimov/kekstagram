@@ -14,6 +14,7 @@
   const createXHR = (method, url, onLoad, onError) => {
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
+
     if (xhr.status === 200) {
       onLoad(xhr.response);
     } else {
