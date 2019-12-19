@@ -37,9 +37,17 @@
     return arr;
   };
 
+  const ESC_KEY = "Escape";
+  const downEsc = (evt, func) => {
+    if (evt.key === ESC_KEY) {
+      func();
+    }
+  };
+
   window.utils = {
     getRandomNum,
     getRandomElement,
-    getRandomArr
+    getRandomArr,
+    downEsc,
   };
 })();
