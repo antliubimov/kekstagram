@@ -15,11 +15,8 @@
     for (let i = 0; i < photo.comments.length; i += 1) {
       const commentTemplate = `
 <li class="social__comment social__comment--text">
-    <img class="social__picture" src="img/avatar-${window.utils.getRandomNum(
-      1,
-      6
-    )}.svg" alt="Аватар комментатора фотографии" width="35" height="35">
-    <p class="social__text">${photo.comments[i]}</p>
+    <img class="social__picture" src=${photo.comments[i].avatar} alt="Аватар комментатора фотографии" width="35" height="35">
+    <p class="social__text">${photo.comments[i].message}</p>
 </li>
 `;
       comments += commentTemplate;

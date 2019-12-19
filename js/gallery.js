@@ -49,8 +49,7 @@
 
 
   const onLoadPhotos = (photos) => {
-    console.log(photos);
-    const photosFragment = document.createDocumentFragment();
+   const photosFragment = document.createDocumentFragment();
     for (let i = 0, { length } = photos; i < length; i += 1) {
       const photoElement = window.picture.renderPhoto(photos[i]);
       photoElement.addEventListener(
