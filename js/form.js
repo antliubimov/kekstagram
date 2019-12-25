@@ -184,12 +184,9 @@
    * @param {Event} evt
    */
   const onImgUploadEscDown = evt => {
-    if (
-      evt.key === ESC_KEY &&
-      document.activeElement !== commentField &&
-      document.activeElement !== hashTagsField
-    ) {
-      imgUploadClose();
+    if (document.activeElement !== commentField &&
+      document.activeElement !== hashTagsField) {
+      window.utils.downEsc(evt, imgUploadClose);
     }
   };
   /**
