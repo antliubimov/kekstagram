@@ -47,7 +47,10 @@
     bigPicture.classList.remove("hidden");
   };
 
-
+  /**
+   * Create a photosFragment and add photos into one
+   * @param photos
+   */
   const onLoadPhotos = (photos) => {
    const photosFragment = document.createDocumentFragment();
     for (let i = 0, { length } = photos; i < length; i += 1) {
@@ -65,14 +68,19 @@
   const errorPopup = document.querySelector('.error-popup');
   const errorPopupCancel = document.querySelector('.error-popup__cancel');
   const errorPopupMessage = document.querySelector('.error-popup__message');
-
+  /**
+   * Handle error-message
+   * @param errorMessage
+   */
   const onErrorHandler = (errorMessage) => {
     errorPopup.classList.remove('hidden');
     errorPopupMessage.textContent = errorMessage;
     errorPopupCancel.addEventListener('click', onErrorPopupCancelClick);
     document.addEventListener('keydown', onErrorPopupEscDown);
   };
-
+  /**
+   * Close error-popup
+   */
   const closeErrorPopup = () => {
     errorPopup.classList.add('hidden');
     errorPopupCancel.removeEventListener('click', onErrorPopupCancelClick);
@@ -88,7 +96,6 @@
     }
   };
 
-     window.backend.upLoad(onLoadPhotos, onErrorHandler);
+  window.backend.upLoad(onLoadPhotos, onErrorHandler);
   //const { photos } = window.data;
-
 })();

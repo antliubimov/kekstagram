@@ -2,7 +2,6 @@
 "use strict";
 
 (function() {
-  const ESC_KEY = "Escape";
   const EFFECTS = {
     chrome: {
       min: 0,
@@ -46,6 +45,7 @@
    *  Upload the photo and add a effect to it
    * */
 
+  const uploadForm = document.querySelector('.img-upload__form');
   const uploadFileButton = document.querySelector("#upload-file");
   const imgUploadPanel = document.querySelector(".img-upload__overlay");
   const imgUploadPicture = document.querySelector(".img-upload__preview > img");
@@ -58,6 +58,7 @@
   const scaleLevel = document.querySelector(".scale__level");
   const hashTagsField = document.querySelector(".text__hashtags");
   const commentField = document.querySelector(".text__description");
+  const uploadSubmit = document.querySelector('#upload-submit');
 
   /**
    * Return the scaled value for the effect according to effectName
@@ -230,4 +231,23 @@
   };
 
   scalePin.addEventListener("mousedown", onScalePinMouseDown);
+
+  const onLoadForm = () => {
+    imgUploadClose();
+  };
+
+  const uploadMessageError = document.querySelector('.img-upload__message--error');
+
+  const onErrorHandler = (errorMessage) => {
+    uploadMessageError.classList.remove('hidden');
+    console.log(errorMessage);
+    imgUploadClose();
+  };
+
+  const onUploadSubmitClick = (evt) => {
+    window.backend.downLoad(new FormData(uploadForm), onLoadForm, onErrorHandler);
+    evt.preventDefault();
+  };
+
+  uploadSubmit.addEventListener('click', onUploadSubmitClick);
 })();
