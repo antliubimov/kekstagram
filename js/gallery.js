@@ -63,6 +63,9 @@
     }
 
     document.querySelector(".pictures").appendChild(photosFragment);
+    document
+      .querySelector(".img-filters")
+      .classList.remove("img-filters--inactive");
   };
 
   const errorPopup = document.querySelector(".error-popup");
@@ -97,5 +100,4 @@
   };
 
   window.backend.upLoad(onLoadPhotos, onErrorHandler);
-  //const { photos } = window.data;
 })();
