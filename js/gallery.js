@@ -47,25 +47,42 @@
     bigPicture.classList.remove("hidden");
   };
 
+  const photos = [];
+
+  const recommended = document.querySelector("#filter-recommended");
+  const popular = document.querySelector("#filter-popular");
+  const discussed = document.querySelector("#filter-discussed");
+  const random = document.querySelector("#filter-random");
+
   /**
-   * Create a photosFragment and add photos into one
-   * @param photos
+   * Create a photosFragment and add data into one
+   * @param {Array} data
    */
-  const onLoadPhotos = photos => {
+  const loadPhotos = data => {
     const photosFragment = document.createDocumentFragment();
-    for (let i = 0, { length } = photos; i < length; i += 1) {
-      const photoElement = window.picture.renderPhoto(photos[i]);
+    for (let i = 0, { length } = data; i < length; i += 1) {
+      const photoElement = window.picture.renderPhoto(data[i]);
       photoElement.addEventListener(
         "click",
-        onPhotoElementClick.bind(null, photos[i])
+        onPhotoElementClick.bind(null, data[i])
       );
       photosFragment.appendChild(photoElement);
     }
-
     document.querySelector(".pictures").appendChild(photosFragment);
+  };
+
+  const onLoadPhotos = data => {
+    window.gallery.photos = [...data];
+    loadPhotos(data);
+
     document
       .querySelector(".img-filters")
       .classList.remove("img-filters--inactive");
+
+    recommended.addEventListener("click", window.filters.onRecommendedClick);
+    popular.addEventListener("click", window.filters.onPopularClick);
+    discussed.addEventListener("click", window.filters.onDiscussedClick);
+    random.addEventListener("click", window.filters.onRandomClick);
   };
 
   const errorPopup = document.querySelector(".error-popup");
@@ -100,4 +117,9 @@
   };
 
   window.backend.upLoad(onLoadPhotos, onErrorHandler);
+
+  window.gallery = {
+    photos,
+    loadPhotos
+  };
 })();
