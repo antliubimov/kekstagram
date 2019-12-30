@@ -51,8 +51,8 @@
    * Create a photosFragment and add photos into one
    * @param photos
    */
-  const onLoadPhotos = (photos) => {
-   const photosFragment = document.createDocumentFragment();
+  const onLoadPhotos = photos => {
+    const photosFragment = document.createDocumentFragment();
     for (let i = 0, { length } = photos; i < length; i += 1) {
       const photoElement = window.picture.renderPhoto(photos[i]);
       photoElement.addEventListener(
@@ -65,33 +65,33 @@
     document.querySelector(".pictures").appendChild(photosFragment);
   };
 
-  const errorPopup = document.querySelector('.error-popup');
-  const errorPopupCancel = document.querySelector('.error-popup__cancel');
-  const errorPopupMessage = document.querySelector('.error-popup__message');
+  const errorPopup = document.querySelector(".error-popup");
+  const errorPopupCancel = document.querySelector(".error-popup__cancel");
+  const errorPopupMessage = document.querySelector(".error-popup__message");
   /**
    * Handle error-message
    * @param errorMessage
    */
-  const onErrorHandler = (errorMessage) => {
-    errorPopup.classList.remove('hidden');
+  const onErrorHandler = errorMessage => {
+    errorPopup.classList.remove("hidden");
     errorPopupMessage.textContent = errorMessage;
-    errorPopupCancel.addEventListener('click', onErrorPopupCancelClick);
-    document.addEventListener('keydown', onErrorPopupEscDown);
+    errorPopupCancel.addEventListener("click", onErrorPopupCancelClick);
+    document.addEventListener("keydown", onErrorPopupEscDown);
   };
   /**
    * Close error-popup
    */
   const closeErrorPopup = () => {
-    errorPopup.classList.add('hidden');
-    errorPopupCancel.removeEventListener('click', onErrorPopupCancelClick);
-    document.removeEventListener('keydown', onErrorPopupEscDown);
+    errorPopup.classList.add("hidden");
+    errorPopupCancel.removeEventListener("click", onErrorPopupCancelClick);
+    document.removeEventListener("keydown", onErrorPopupEscDown);
   };
 
   const onErrorPopupCancelClick = () => {
     closeErrorPopup();
   };
-  const onErrorPopupEscDown = (evt) => {
-    if (evt.key === 'Escape') {
+  const onErrorPopupEscDown = evt => {
+    if (evt.key === "Escape") {
       closeErrorPopup();
     }
   };

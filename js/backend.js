@@ -1,8 +1,8 @@
 // backend.js
-'use strict';
+"use strict";
 
-(function () {
-  const URL = 'https://js.dump.academy/kekstagram';
+(function() {
+  const URL = "https://js.dump.academy/kekstagram";
   const XHR_TIMEOUT = 10000;
   /**
    * create XMLHTTPRequest
@@ -14,9 +14,9 @@
    */
   const createXHR = (method, url, onLoad, onError) => {
     const xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
+    xhr.responseType = "json";
 
-    xhr.addEventListener('load', () => {
+    xhr.addEventListener("load", () => {
       if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
         onLoad(xhr.response);
       } else {
@@ -24,12 +24,14 @@
       }
     });
 
-    xhr.addEventListener('error', () => {
+    xhr.addEventListener("error", () => {
       onError(`Connection error occurred`);
     });
 
-    xhr.addEventListener('timeout', () => {
-      onError(`the request did not manage to be executed for ${xhr.timeout} ms`);
+    xhr.addEventListener("timeout", () => {
+      onError(
+        `the request did not manage to be executed for ${xhr.timeout} ms`
+      );
     });
 
     xhr.timeout = XHR_TIMEOUT;
@@ -44,7 +46,7 @@
    */
   const upLoad = (onLoad, onError) => {
     const urlGet = `${URL}/data`;
-    createXHR('GET', urlGet, onLoad, onError).send();
+    createXHR("GET", urlGet, onLoad, onError).send();
   };
   /**
    * Send data
@@ -53,11 +55,11 @@
    * @param onError
    */
   const downLoad = (data, onLoad, onError) => {
-    createXHR('POST', URL, onLoad, onError).send(data);
+    createXHR("POST", URL, onLoad, onError).send(data);
   };
 
   window.backend = {
     upLoad,
     downLoad
-  }
+  };
 })();
