@@ -25,12 +25,6 @@
     bigPicture
       .querySelector(".big-picture__title")
       .classList.remove("visually-hidden");
-    bigPicture
-      .querySelector(".social__comment-count")
-      .classList.add("visually-hidden");
-    bigPicture
-      .querySelector(".social__comment-loadmore")
-      .classList.add("visually-hidden");
 
     window.preview.bigPictureCancel.addEventListener(
       "click",
