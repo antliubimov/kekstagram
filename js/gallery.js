@@ -22,6 +22,14 @@
       photo.description;
     bigPictureComments.innerHTML = window.preview.getComments(photo);
 
+    window.gallery.onLoadMore = () => {
+      window.preview.onLoadComments(photo.comments);
+    };
+    window.preview.loadMore.addEventListener(
+      "click",
+      window.gallery.onLoadMore
+    );
+
     bigPicture
       .querySelector(".big-picture__title")
       .classList.remove("visually-hidden");
