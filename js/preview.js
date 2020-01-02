@@ -20,20 +20,14 @@
 </li>
 `;
   };
-  /**
-   * Hidden loadMore
-   */
-  const hiddenLoadMore = () => {
-    loadMore.classList.add("visually-hidden");
-    loadMore.removeEventListener("click", onLoadMore);
-  };
+
   /**
    * Add comments in ul of comments
    * @param {Object} photoComments
    * @param {Number} count
-   * @param {Node} comments
    */
-  const addComments = (photoComments, count, comments) => {
+  const addComments = (photoComments, count) => {
+    const comments = document.querySelector(".social__comments");
     const commLength = photoComments.length;
     const commentsArr = photoComments.slice(
       count,
@@ -46,6 +40,21 @@
     if (commentsArr.length < 5) {
       hiddenLoadMore();
     }
+  };
+  /**
+   * Load more comments
+   * @param {array} photoComments
+   */
+  const onLoadComments = photoComments => {
+    const commentsCount = document.querySelectorAll(".social__comment").length;
+    addComments(photoComments, commentsCount);
+  };
+  /**
+   * Hidden loadMore
+   */
+  const hiddenLoadMore = () => {
+    loadMore.classList.add("visually-hidden");
+    // loadMore.removeEventListener("click", onLoadMore);
   };
 
   /**
@@ -62,25 +71,11 @@
     }
     commentsLoaded.innerText = commentsLength;
 
-    loadMore.addEventListener("click", onLoadMore.bind(photo, photo.comments));
-
     if (commentsLength === photo.comments.length) {
       hiddenLoadMore();
     }
 
     return comments;
-  };
-
-  /**
-   * Load more comments
-   * @param {array} photoComments
-   */
-  const onLoadMore = photoComments => {
-    console.log(photoComments);
-    const comments = document.querySelector(".social__comments");
-    const commentsCount = document.querySelectorAll(".social__comment").length;
-
-    addComments(photoComments, commentsCount, comments);
   };
 
   /**
@@ -97,7 +92,7 @@
       .querySelector(".social__comment-loadmore")
       .classList.remove("visually-hidden");
     bigPicture.classList.add("hidden");
-    loadMore.removeEventListener("click", onLoadMore);
+    loadMore.removeEventListener("click", window.gallery.onLoadMore);
     bigPictureCancel.removeEventListener("click", onBigPictureCancelClick);
     document.removeEventListener("keydown", onBigPictureEscDown);
   };
@@ -121,6 +116,8 @@
     bigPictureCancel,
     getComments,
     onBigPictureCancelClick,
-    onBigPictureEscDown
+    onBigPictureEscDown,
+    loadMore,
+    onLoadComments
   };
 })();
