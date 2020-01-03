@@ -58,7 +58,7 @@
   const onFilterClick = evt => {
     const filterID = evt.target.id;
     if (currentFilter.id.toString() !== filterID) {
-      getPhotosFn(evt, filter[filterID]);
+      window.debounce(getPhotosFn(evt, filter[filterID]));
     }
   };
 
