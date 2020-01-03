@@ -2,18 +2,29 @@
 "use strict";
 
 (function() {
-  const cleanPictures = button => {
+  const cleanPictures = () => {
     document
       .querySelectorAll(".picture__link")
       .forEach(picture => picture.remove());
-    document
-      .querySelectorAll(".img-filters__button")
-      .forEach(btn => btn.classList.remove("img-filters__button--active"));
-    button.classList.add("img-filters__button--active");
+  };
+
+  const getCurrentFilter = () => {
+    return [...document.querySelectorAll(".img-filters__button")].filter(btn =>
+      btn.classList.contains("img-filters__button--active")
+    )[0];
+  };
+
+  let currentFilter = getCurrentFilter();
+
+  const setCurrentFilter = btn => {
+    currentFilter.classList.remove("img-filters__button--active");
+    currentFilter = btn;
+    btn.classList.add("img-filters__button--active");
   };
 
   const getPhotosFn = (evt, fn) => {
-    cleanPictures(evt.target);
+    cleanPictures();
+    setCurrentFilter(evt.target);
     const photos = [...window.gallery.photos];
     const sortPhotos = fn(photos);
     window.gallery.loadPhotos(sortPhotos);
@@ -37,25 +48,21 @@
     return randomPhotos;
   };
 
-  const onRecommendedClick = evt => {
-    getPhotosFn(evt, getRecommended);
-  };
-  const onPopularClick = evt => {
-    getPhotosFn(evt, getPopular);
-  };
-
-  const onDiscussedClick = evt => {
-    getPhotosFn(evt, getDiscussed);
+  const filter = {
+    "filter-recommended": getRecommended,
+    "filter-popular": getPopular,
+    "filter-discussed": getDiscussed,
+    "filter-random": getRandomPhotos
   };
 
-  const onRandomClick = evt => {
-    getPhotosFn(evt, getRandomPhotos);
+  const onFilterClick = evt => {
+    const filterID = evt.target.id;
+    if (currentFilter.id.toString() !== filterID) {
+      getPhotosFn(evt, filter[filterID]);
+    }
   };
 
   window.filters = {
-    onRecommendedClick,
-    onPopularClick,
-    onDiscussedClick,
-    onRandomClick
+    onFilterClick
   };
 })();
