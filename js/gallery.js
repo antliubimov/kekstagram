@@ -55,6 +55,17 @@
   const popular = document.querySelector("#filter-popular");
   const discussed = document.querySelector("#filter-discussed");
   const random = document.querySelector("#filter-random");
+  const filters = [recommended, popular, discussed, random];
+
+  /**
+   * Add eventListener on filter-button
+   * @param {Array} filtersArr
+   */
+  const addFiltersListeners = filtersArr => {
+    filtersArr.forEach(filter =>
+      filter.addEventListener("click", window.filters.onFilterClick)
+    );
+  };
 
   /**
    * Create a photosFragment and add data into one
@@ -81,10 +92,7 @@
       .querySelector(".img-filters")
       .classList.remove("img-filters--inactive");
 
-    recommended.addEventListener("click", window.filters.onRecommendedClick);
-    popular.addEventListener("click", window.filters.onPopularClick);
-    discussed.addEventListener("click", window.filters.onDiscussedClick);
-    random.addEventListener("click", window.filters.onRandomClick);
+    addFiltersListeners(filters);
   };
 
   const errorPopup = document.querySelector(".error-popup");
