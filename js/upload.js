@@ -26,7 +26,7 @@
     }
   };
 
-  window.avatar = {
+  window.upload = {
     onUploadFileChooserChange
   };
 })();
