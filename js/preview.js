@@ -54,7 +54,6 @@
    */
   const hiddenLoadMore = () => {
     loadMore.classList.add("visually-hidden");
-    // loadMore.removeEventListener("click", onLoadMore);
   };
 
   /**
