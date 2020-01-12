@@ -1,4 +1,4 @@
-// avatar.js
+// upload.js
 "use strict";
 
 (function() {
