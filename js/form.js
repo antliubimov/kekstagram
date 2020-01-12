@@ -128,6 +128,7 @@
    */
   const onUploadFileChange = () => {
     imgUploadPanel.classList.remove("hidden");
+    window.upload.onUploadFileChooserChange();
     initializeEffects();
     window.formValidity.initializeValidity();
     uploadCancel.addEventListener("click", onUploadCancelClick);
