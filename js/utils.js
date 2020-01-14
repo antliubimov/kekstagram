@@ -48,6 +48,6 @@
     getRandomNum,
     getRandomElement,
     getRandomArr,
-    downEsc,
+    downEsc
   };
 })();

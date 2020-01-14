@@ -22,15 +22,17 @@
       photo.description;
     bigPictureComments.innerHTML = window.preview.getComments(photo);
 
+    window.gallery.onLoadMore = () => {
+      window.preview.onLoadComments(photo.comments);
+    };
+    window.preview.loadMore.addEventListener(
+      "click",
+      window.gallery.onLoadMore
+    );
+
     bigPicture
       .querySelector(".big-picture__title")
       .classList.remove("visually-hidden");
-    bigPicture
-      .querySelector(".social__comment-count")
-      .classList.add("visually-hidden");
-    bigPicture
-      .querySelector(".social__comment-loadmore")
-      .classList.add("visually-hidden");
 
     window.preview.bigPictureCancel.addEventListener(
       "click",
@@ -47,55 +49,87 @@
     bigPicture.classList.remove("hidden");
   };
 
+  const photos = [];
+
+  const recommended = document.querySelector("#filter-recommended");
+  const popular = document.querySelector("#filter-popular");
+  const discussed = document.querySelector("#filter-discussed");
+  const random = document.querySelector("#filter-random");
+  const filters = [recommended, popular, discussed, random];
+
   /**
-   * Create a photosFragment and add photos into one
-   * @param photos
+   * Add eventListener on filter-button
+   * @param {Array} filtersArr
    */
-  const onLoadPhotos = (photos) => {
-   const photosFragment = document.createDocumentFragment();
-    for (let i = 0, { length } = photos; i < length; i += 1) {
-      const photoElement = window.picture.renderPhoto(photos[i]);
+  const addFiltersListeners = filtersArr => {
+    filtersArr.forEach(filter =>
+      filter.addEventListener("click", window.filters.onFilterClick)
+    );
+  };
+
+  /**
+   * Create a photosFragment and add data into one
+   * @param {Array} data
+   */
+  const loadPhotos = data => {
+    const photosFragment = document.createDocumentFragment();
+    for (let i = 0, { length } = data; i < length; i += 1) {
+      const photoElement = window.picture.renderPhoto(data[i]);
       photoElement.addEventListener(
         "click",
-        onPhotoElementClick.bind(null, photos[i])
+        onPhotoElementClick.bind(null, data[i])
       );
       photosFragment.appendChild(photoElement);
     }
-
     document.querySelector(".pictures").appendChild(photosFragment);
   };
 
-  const errorPopup = document.querySelector('.error-popup');
-  const errorPopupCancel = document.querySelector('.error-popup__cancel');
-  const errorPopupMessage = document.querySelector('.error-popup__message');
+  const onLoadPhotos = data => {
+    window.gallery.photos = [...data];
+    loadPhotos(data);
+
+    document
+      .querySelector(".img-filters")
+      .classList.remove("img-filters--inactive");
+
+    addFiltersListeners(filters);
+  };
+
+  const errorPopup = document.querySelector(".error-popup");
+  const errorPopupCancel = document.querySelector(".error-popup__cancel");
+  const errorPopupMessage = document.querySelector(".error-popup__message");
   /**
    * Handle error-message
    * @param errorMessage
    */
-  const onErrorHandler = (errorMessage) => {
-    errorPopup.classList.remove('hidden');
+  const onErrorHandler = errorMessage => {
+    errorPopup.classList.remove("hidden");
     errorPopupMessage.textContent = errorMessage;
-    errorPopupCancel.addEventListener('click', onErrorPopupCancelClick);
-    document.addEventListener('keydown', onErrorPopupEscDown);
+    errorPopupCancel.addEventListener("click", onErrorPopupCancelClick);
+    document.addEventListener("keydown", onErrorPopupEscDown);
   };
   /**
    * Close error-popup
    */
   const closeErrorPopup = () => {
-    errorPopup.classList.add('hidden');
-    errorPopupCancel.removeEventListener('click', onErrorPopupCancelClick);
-    document.removeEventListener('keydown', onErrorPopupEscDown);
+    errorPopup.classList.add("hidden");
+    errorPopupCancel.removeEventListener("click", onErrorPopupCancelClick);
+    document.removeEventListener("keydown", onErrorPopupEscDown);
   };
 
   const onErrorPopupCancelClick = () => {
     closeErrorPopup();
   };
-  const onErrorPopupEscDown = (evt) => {
-    if (evt.key === 'Escape') {
+  const onErrorPopupEscDown = evt => {
+    if (evt.key === "Escape") {
       closeErrorPopup();
     }
   };
 
   window.backend.upLoad(onLoadPhotos, onErrorHandler);
-  //const { photos } = window.data;
+
+  window.gallery = {
+    photos,
+    loadPhotos
+  };
 })();

@@ -72,7 +72,7 @@
 
   const photos = getPhotos();
 
-  window.data = {
+  window.photos = {
     photos
   };
 })();
