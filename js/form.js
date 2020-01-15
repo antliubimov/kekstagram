@@ -133,6 +133,7 @@
   const onUploadFileChange = () => {
     imgUploadPanel.classList.remove("hidden");
     window.upload.onUploadFileChooserChange();
+    window.resize.setResizeValue(100);
     initializeEffects();
     window.formValidity.initializeValidity();
     uploadCancel.addEventListener("click", onUploadCancelClick);
@@ -181,6 +182,7 @@
    */
   const imgUploadClose = () => {
     uploadFileButton.value = "";
+    imgUploadPicture.src = "";
     imgUploadPanel.classList.add("hidden");
     uploadCancel.removeEventListener("click", onUploadCancelClick);
     document.removeEventListener("keydown", onImgUploadEscDown);
