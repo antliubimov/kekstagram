@@ -59,6 +59,8 @@
   const hashTagsField = document.querySelector(".text__hashtags");
   const commentField = document.querySelector(".text__description");
   const uploadSubmit = document.querySelector("#upload-submit");
+  const decreaseSizeButton = document.querySelector(".resize__control--minus");
+  const increaseSizeButton = document.querySelector(".resize__control--plus");
 
   /**
    * Return the scaled value for the effect according to effectName
@@ -117,6 +119,8 @@
     [...effectItems].forEach(effectsItem =>
       effectsItem.addEventListener("click", onEffectsItemClick)
     );
+    decreaseSizeButton.addEventListener("click", window.resize.onDecreaseSizeButtonClick);
+    increaseSizeButton.addEventListener("click", window.resize.onIncreaseSizeButtonClick);
     defaultEffect.checked = true;
     setPictureClass(defaultEffect.value);
     setPictureEffect(defaultEffect.value);
@@ -168,6 +172,8 @@
     [...effectItems].forEach(effectsItem =>
       effectsItem.removeEventListener("click", onEffectsItemClick)
     );
+    decreaseSizeButton.removeEventListener("click", window.resize.onDecreaseSizeButtonClick);
+    increaseSizeButton.removeEventListener("click", window.resize.onIncreaseSizeButtonClick);
   };
 
   /**
