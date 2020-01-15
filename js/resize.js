@@ -11,8 +11,6 @@
   const resizeValue = document.querySelector(".resize__control--value");
   const img = document.querySelector(".img-upload__preview");
 
-  resizeValue.value = `${PERCENT.max}%`;
-
   const getResizeValue = () => {
     const regExp = /\d+[^%]/;
     const resize = resizeValue.value;
@@ -41,6 +39,7 @@
   };
 
   window.resize = {
+    setResizeValue,
     onDecreaseSizeButtonClick,
     onIncreaseSizeButtonClick,
   };
