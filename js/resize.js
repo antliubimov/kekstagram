@@ -7,8 +7,7 @@
     max: 100,
     step: 25
   };
-  const decreaseSizeButton = document.querySelector(".resize__control--minus");
-  const increaseSizeButton = document.querySelector(".resize__control--plus");
+
   const resizeValue = document.querySelector(".resize__control--value");
   const img = document.querySelector(".img-upload__preview");
 
@@ -41,6 +40,8 @@
     setResizeValue(resize);
   };
 
-  decreaseSizeButton.addEventListener("click", onDecreaseSizeButtonClick);
-  increaseSizeButton.addEventListener("click", onIncreaseSizeButtonClick);
+  window.resize = {
+    onDecreaseSizeButtonClick,
+    onIncreaseSizeButtonClick,
+  };
 })();
